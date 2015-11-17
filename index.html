@@ -1,0 +1,97 @@
+<html>
+<head>
+</head>
+<body>
+ <script>
+ 
+
+ 
+function makeit() {
+    // These variables can be used in the drawing functions
+    var canvas = document.getElementById("mycanvas");
+    var ctx = canvas.getContext('2d');
+    var drops = [];
+    var colors = ["red", "green", "blue", "orange", "purple", "yellow", "white"];
+	this.color = colors[Math.floor(Math.random()*colors.length)];
+
+    // Init canvas & drops
+    init();
+
+    // Make the 3rd drop falls
+    var fall = setInterval(function () {
+        updateDrop(3);
+    }, 200);
+    
+    // Make the 7th drop falls
+    var fall2 = setInterval(function () {
+        updateDrop(7);
+    }, 400);
+
+    // Stop the 3rd drop at anytime with this code :
+    // clearInterval(fall);
+
+
+    // Functions
+    function init() {
+        canvas.width = 600;
+        canvas.height = 600;
+        canvas.style.border = "1px solid black";
+        // Draw background
+        drawBackground();
+        // Draw drops
+        var xpos = [10, 20, 30, 40, 50, 60, 70, 70, 76];
+        var ypos = [30, 20, 60, 80, 76, 90, 30, 40, 79];
+        for (i = 0; i < xpos.length; i++) {
+            drops.push(drawDrop(xpos[i], ypos[i]));
+        }
+    }
+    
+    function drawBackground(){
+        ctx.fillStyle = "gray";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fill();
+    }
+
+    function drawDrop(x, y) {
+    
+
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        ctx.moveTo(x - 5, y);
+        ctx.lineTo(x, y - 7);
+        ctx.lineTo(x + 5, y);
+        ctx.arc(x, y, 5, 0, Math.PI);
+        ctx.closePath();
+        ctx.fill();
+        
+        return {
+            'x': x,
+            'y': y
+        };
+    }
+
+    function updateDrop(dropNumber) {
+        var dropNumber = dropNumber - 1; //Because 0 is first
+        // Update position        
+        if (drops[dropNumber].y >= canvas.height) {
+            drops[dropNumber].y = 0;
+        } else{
+            drops[dropNumber].y += 3; 
+        }
+        //Draw background
+        drawBackground();
+        //Draw drops
+        for (i = 0; i < drops.length; i++) {
+            drawDrop(drops[i].x, drops[i].y);
+        }
+    }
+
+}
+window.onload = makeit;
+
+ </script>
+ 
+ <canvas id="mycanvas"></canvas>
+ 
+ </body>
+ </html>
