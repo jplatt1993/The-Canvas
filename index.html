@@ -1,118 +1,87 @@
-
+<!doctype html>
 <html>
 <head>
 
- 
-function makeit() {
-    // These variables can be used in the drawing functions
-    var canvas = document.getElementById("mycanvas");
-    var ctx = canvas.getContext('2d');
-    var drops = [];
-    var timer;
-	
+<script>
+var canvas;
+var context;
+var drops = [];
 
-    // Init canvas & drops
-    init();
-
-    var fall = setInterval(function () {
-        updateDrop(0);
-    }, 50);
-    var fall = setInterval(function () {
-        updateDrop(1);
-    }, 35);
-    var fall = setInterval(function () {
-        updateDrop(2);
-    }, 30);
-    var fall = setInterval(function () {
-        updateDrop(3);
-    }, 20);
-    
-    var fall2 = setInterval(function () {
-        updateDrop(4);
-    }, 40);
-        var fall2 = setInterval(function () {
-        updateDrop(5);
-    }, 25);
-        var fall2 = setInterval(function () {
-        updateDrop(6);
-    }, 23);
-    var fall2 = setInterval(function () {
-        updateDrop(7);
-    }, 40);
-    var fall = setInterval(function () {
-        updateDrop(8);
-    }, 20);
-    var fall = setInterval(function () {
-        updateDrop(9);
-    }, 20);
-
-
-    // Functions
-    function init() {
-        canvas.width = 600;
-        canvas.height = 600;
-        canvas.style.border = "1px solid black";
-        // Draw background
-        drawBackground();
-        // Draw drops
-        var xpos = [10, 20, 30, 40, 50, 60, 70, 70, 76];
-        var ypos = [30, 20, 60, 80, 76, 90, 30, 40, 79];
-        var colors = ["#000080", "#add8e6", "blue", "white"];
-        var color = colors[Math.floor(Math.random() * colors.length)];
-	    this.color = colors[Math.floor(Math.random()*colors.length)];
-        for (i = 0; i < xpos.length; i++) {
-            drops.push(drawDrop(xpos[i], ypos[i]));
-    }
+function Drop(x,y,color){
+	this.x = x;
+	this.y = y;
+	this.color = color;
+	this.dx = Math.random()*3;
+    this.dy = Math.random()*3;
 }
-    
-    function drawBackground(){
-        ctx.fillStyle = "gray";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fill();
-}
-    
-    
-
-    
-    function drawDrop(x,y) {
-
-		var x = Math.floor(Math.random() * canvas.width);
-		var y = Math.floor(Math.random() * canvas.height);
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.moveTo(x - 5, y);
-        ctx.lineTo(x, y - 7);
-        ctx.lineTo(x + 5, y);
-        ctx.arc(x, y, 5, 0, Math.PI);
-        ctx.closePath();
-        ctx.fill();
-        
-        return {
-            'x': x,
-            'y': y
-    };
-}
-
-    function updateDrop(dropNumber) {
-        var dropNumber = dropNumber - 1; //Because 0 is first
-        // Update position        
-        if (drops[dropNumber].y >= canvas.height) {
-            drops[dropNumber].y = 1;
-        } else{
-            drops[dropNumber].y += 4; 
-        }
-        //Draw background
-        drawBackground();
-        //Draw drops
-        for (i = 0; i < drops.length; i++) {
-            drawDrop(drops[i].x, drops[i].y);
-        }
-    }
+function init(){
+	canvas = document.getElementById('canvas');
+	context = canvas.getContext('2d');
+	window.addEventListener('resize', resizeCanvas, false);
+	window.addEventListener('orientationchange', resizeCanvas, false);
+	resizeCanvas();
+	canvas.onclick = function(event){
+		handleClick(event.clientX, event.clientY);
+	};
+	setInterval(handleClick,30);
 
 }
-window.onload = makeit;
-
+function handleClick(x,y){
+	var found = false;
+	for(var i = 0; i<drops.length; i++){
+		d = Math.sqrt((drops[i].x-x)*(drops[i].x-x) + (drops[i].y-y)*(drops[i].y-y));
+		if(d<=30){
+			drops.splice(i,1);
+			found = true;
+		}
+	}
+	fillBackgroundColor();
+	if(!found){
+	var colors = ["#000080", "#add8e6", "blue", "white"];
+		var color = colors[Math.floor(Math.random()*colors.length)];
+		drops.push(new Drop(x,y,color));
+	}
+	for(var i = 0; i<drops.length; i++){
+		drawDrop(drops[i]);
+	}
+}
+function drawDrop(drop){
+	context.beginPath();
+	context.arc(drop.x, drop.y, 5, 0, Math.PI);
+	context.fillStyle = drop.color;
+	context.moveTo(drop.x - 5, drop.y);
+    context.lineTo(drop.x, drop.y - 7);
+    context.lineTo(drop.x + 5, drop.y);
+	context.closePath();
+	context.fill();
+	if (drop.x + drop.dx > canvas.width || drop.x + drop.dx < 0)
+    	drop.dx = -drop.dx;
+ 	if (drop.y + drop.dy > canvas.height || drop.y + drop.dy < 0)
+    	drop.dy = -drop.dy;
+  	drop.x += drop.dx;
+  	drop.y += drop.dy;
+}
+function degreesToRadians(degrees){
+	return (degrees * Math.PI/180);
+}
+function fillBackgroundColor(){
+	context.fillStyle = 'gray';
+	context.fillRect(0,0,canvas.width,canvas.height);
+}
+function resizeCanvas(){
+	canvas.width = window.innerWidth - 20;
+	canvas.height = window.innerHeight - 20;
+	fillBackgroundColor();
+	for(var i = 0; i<drops.length; i++){
+		drawDrop(drops[i]);
+	}
+}
+window.onload = init;
 </script>
-
+</head>
+<body>
+<canvas id='canvas' width=500 height=500></canvas>
 </body>
 </html>
+	
+
