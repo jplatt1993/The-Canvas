@@ -11,8 +11,7 @@ function Drop(x,y,color){
 	this.x = x;
 	this.y = y;
 	this.color = color;
-	this.dx = Math.random()*3;
-    this.dy = Math.random()*3;
+    this.dy = Math.random();
 }
 function init(){
 	canvas = document.getElementById('canvas');
@@ -23,7 +22,7 @@ function init(){
 	canvas.onclick = function(event){
 		handleClick(event.clientX, event.clientY);
 	};
-	setInterval(handleClick,30);
+	setInterval(handleClick,5);
 
 }
 function handleClick(x,y){
@@ -54,16 +53,17 @@ function drawDrop(drop){
     context.lineTo(drop.x + 5, drop.y);
 	context.closePath();
 	context.fill();
-	if (drop.x + drop.dx > canvas.width || drop.x + drop.dx < 0)
-    	drop.dx = -drop.dx;
- 	if (drop.y + drop.dy > canvas.height || drop.y + drop.dy < 0)
-    	drop.dy = -drop.dy;
-  	drop.x += drop.dx;
-  	drop.y += drop.dy;
+	if (drop.y + drop.dy > canvas.height || drop.y + drop.dy < 0)
+    	drop.dy != -drop.dy;
+	drop.y += drop.dy;
+	
+	return {
+        'y': drop.y
+    };
+  	
+  	        
 }
-function degreesToRadians(degrees){
-	return (degrees * Math.PI/180);
-}
+
 function fillBackgroundColor(){
 	context.fillStyle = 'gray';
 	context.fillRect(0,0,canvas.width,canvas.height);
