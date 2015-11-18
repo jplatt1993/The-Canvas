@@ -1,9 +1,6 @@
+
 <html>
 <head>
-</head>
-<body>
- <script>
- 
 
  
 function makeit() {
@@ -11,24 +8,43 @@ function makeit() {
     var canvas = document.getElementById("mycanvas");
     var ctx = canvas.getContext('2d');
     var drops = [];
-    var colors = ["red", "green", "blue", "orange", "purple", "yellow", "white"];
-	this.color = colors[Math.floor(Math.random()*colors.length)];
+    var timer;
+	
 
     // Init canvas & drops
     init();
 
-    // Make the 3rd drop falls
+    var fall = setInterval(function () {
+        updateDrop(0);
+    }, 50);
+    var fall = setInterval(function () {
+        updateDrop(1);
+    }, 35);
+    var fall = setInterval(function () {
+        updateDrop(2);
+    }, 30);
     var fall = setInterval(function () {
         updateDrop(3);
-    }, 200);
+    }, 20);
     
-    // Make the 7th drop falls
+    var fall2 = setInterval(function () {
+        updateDrop(4);
+    }, 40);
+        var fall2 = setInterval(function () {
+        updateDrop(5);
+    }, 25);
+        var fall2 = setInterval(function () {
+        updateDrop(6);
+    }, 23);
     var fall2 = setInterval(function () {
         updateDrop(7);
-    }, 400);
-
-    // Stop the 3rd drop at anytime with this code :
-    // clearInterval(fall);
+    }, 40);
+    var fall = setInterval(function () {
+        updateDrop(8);
+    }, 20);
+    var fall = setInterval(function () {
+        updateDrop(9);
+    }, 20);
 
 
     // Functions
@@ -41,22 +57,29 @@ function makeit() {
         // Draw drops
         var xpos = [10, 20, 30, 40, 50, 60, 70, 70, 76];
         var ypos = [30, 20, 60, 80, 76, 90, 30, 40, 79];
+        var colors = ["#000080", "#add8e6", "blue", "white"];
+        var color = colors[Math.floor(Math.random() * colors.length)];
+	    this.color = colors[Math.floor(Math.random()*colors.length)];
         for (i = 0; i < xpos.length; i++) {
             drops.push(drawDrop(xpos[i], ypos[i]));
-        }
     }
+}
     
     function drawBackground(){
         ctx.fillStyle = "gray";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fill();
-    }
-
-    function drawDrop(x, y) {
+}
+    
     
 
+    
+    function drawDrop(x,y) {
+
+		var x = Math.floor(Math.random() * canvas.width);
+		var y = Math.floor(Math.random() * canvas.height);
         ctx.beginPath();
-        ctx.fillStyle = "white";
+        ctx.fillStyle = color;
         ctx.moveTo(x - 5, y);
         ctx.lineTo(x, y - 7);
         ctx.lineTo(x + 5, y);
@@ -67,16 +90,16 @@ function makeit() {
         return {
             'x': x,
             'y': y
-        };
-    }
+    };
+}
 
     function updateDrop(dropNumber) {
         var dropNumber = dropNumber - 1; //Because 0 is first
         // Update position        
         if (drops[dropNumber].y >= canvas.height) {
-            drops[dropNumber].y = 0;
+            drops[dropNumber].y = 1;
         } else{
-            drops[dropNumber].y += 3; 
+            drops[dropNumber].y += 4; 
         }
         //Draw background
         drawBackground();
@@ -89,9 +112,7 @@ function makeit() {
 }
 window.onload = makeit;
 
- </script>
- 
- <canvas id="mycanvas"></canvas>
- 
- </body>
- </html>
+</script>
+
+</body>
+</html>
