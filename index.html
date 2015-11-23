@@ -1,12 +1,15 @@
 <html>
 <head>
-<title>Drip Drop April Shower</title>
+
 <script>
+
 var canvas;
 var context;
+var texts = [];
 var drops = [];
 var clouds = [];
 var squares = [];
+
 
 function Drop(x,y,color){
     this.x = x;
@@ -15,9 +18,13 @@ function Drop(x,y,color){
     this.dy = Math.random();
 }
 
+function Text(x,y,color){
+    this.x = x;
+    this.y = y;
+}
 function Cloud(x,y,color){
-    this.cx = x;
-    this.cy = y;
+    this.x = x;
+    this.y = y;
     this.color = color;
 }
 
@@ -29,22 +36,7 @@ function Square(x,y,w,color){
     this.qy = Math.random();
 }
 
-function makeTitle(){
-	var lines = [
-	    ['Drip', 'Drop', 'Drenched'],
-		['Little'],
-		['April Shower', 'May Shower', 'July Shower', 'February Shower', 'August Shower']
-	];
-	var title ='';
-	for (var i=0; i <lines.length; i++) {
-		var random = Math.floor(Math.random() * lines[i].length);
-		title += lines[i][random] + ' ';
-	};
-	return(title);
-}
-
 function init(){
-	var title = makeTitle();
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
     
@@ -69,14 +61,8 @@ function handleClick(x,y,w){
             drops.splice(i,1);
             found = true;
         }
-}   
-            for(var i = 0; i<squares.length; i++){
-        d = Math.sqrt((squares[i].x-x)*(squares[i].x-x) + (squares[i].y-y)*(squares[i].y-y));
-        if(d<=10){
-            squares.splice(i,1);
-            found = true;
-        }
-}
+	}
+
     fillBackgroundColor();
     if(!found){
     var colors = ["#000080", "#add8e6", "blue"];
@@ -84,17 +70,31 @@ function handleClick(x,y,w){
         drops.push(new Drop(x,y,color));
         clouds.push(new Cloud(x,y,color));
         squares.push(new Square(x,y,w,color));
+        texts.push(new Text(x,y,w,color));
     }
-    for(var i = 0; i<drops.length; i++){
+    
+  		for(var i = 0; i<texts.length; i++){
+        drawText(texts[i]);
+    }
+   	 		for(var i = 0; i<drops.length; i++){
         drawDrop(drops[i]);
 }
-    	for(var i = 0; i<squares.length; i++){
+    			for(var i = 0; i<squares.length; i++){
         drawSquare(squares[i]);
 }
-  			for(var i = 0; i<clouds.length; i++){
+  					for(var i = 0; i<clouds.length; i++){
         drawCloud(clouds[i]);
     }
 }
+function drawText(){
+	context.beginPath();
+	context.font= "35px Arial";
+  	context.fillStyle = "white";
+  	context.fillText("Drip, Drip, Drop, little April Shower...", 500, 50);
+  	context.closePath();
+  
+  }
+  
 function drawDrop(drop){
     context.beginPath();
     context.arc(drop.x, drop.y, 5, 0, Math.PI);
@@ -116,12 +116,9 @@ function drawSquare(square){
 	var sy = Math.floor(Math.random() * canvas.height);
 	context.beginPath();
 	context.rect(sx, sy, sw, sw); 
-	context.fillStyle = square.color;
+	context.fillStyle = '#add8e6';
 	context.fill();
-	
-	if (square.sy + square.qy > canvas.height || square.sy + square.qy < 0)
-        square.qy != -square.qy;
-    square.sy += square.qy;
+
 };
 
 function drawCloud(cloud){
@@ -137,17 +134,22 @@ function drawCloud(cloud){
       context.lineWidth = 5;
       context.fillStyle = 'white';
       context.fill();
+      
+
+      context.beginPath();
+      context.moveTo(170, 80);
+      context.bezierCurveTo(130, 100, 130, 150, 230, 150);
+      context.bezierCurveTo(250, 180, 320, 180, 340, 150);
+      context.bezierCurveTo(420, 150, 420, 120, 390, 100);
+      context.bezierCurveTo(430, 40, 370, 30, 340, 50);
+      context.bezierCurveTo(320, 5, 250, 20, 250, 50);
+      context.bezierCurveTo(200, 5, 150, 20, 170, 80);
+      context.closePath();
+      context.lineWidth = 5;
+      context.fillStyle = 'white';
+      context.fill();
 
 };
-
-function drawText(canvas, context, title){
-	context.fillStyle = 'black';
-	context.font = 'bold 1em sans-serif';
-	context.textAlign = 'right';
-	context.fillText(title, canvas.width-20, canvas.height-40);
-
-
-}
 
 
 function fillBackgroundColor(){
@@ -167,17 +169,14 @@ function resizeCanvas(){
             for(var i = 0; i<squares.length; i++){
         drawSquare(squares[i]);
     }
+            for(var i = 0; i<texts.length; i++){
+        drawText(texts);
+    }
 }
-window.onload = init;{
-	var button = document.getElementById('artButton');
-	button.onclick = makeTitle();
-}
+window.onload = init;
 </script>
 </head>
 <body>
 <canvas id='canvas' width=500 height=500></canvas>
-<form>
-<input type ='button' id='artButton' value= 'Make Showers'>
-</form>
 </body>
 </html>
