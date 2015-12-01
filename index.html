@@ -1,128 +1,92 @@
+<!doctype html>
 <html>
 <head>
-
+<title>Responsive Interactive Canvas</title>
 <script>
-
-var canvas;
-var context;
-var texts = [];
-var drops = [];
-var clouds = [];
-var squares = [];
-
-
-function Drop(x,y,color){
-    this.x = x;
-    this.y = y;
-    this.color = color;
-    this.dy = Math.random();
-}
-
-function Text(x,y,color){
-    this.x = x;
-    this.y = y;
-}
-function Cloud(x,y,color){
-    this.x = x;
-    this.y = y;
-    this.color = color;
-}
-
-function Square(x,y,w,color){
-    this.sx = x;
-    this.sy = y;
-    this.sw = w;
-    this.color = color;
-    this.qy = Math.random();
-}
-
-function init(){
-    canvas = document.getElementById('canvas');
-    context = canvas.getContext('2d');
-    
-    alert("Hello!\nClick on the screen for rain drops!");
-    
-    window.addEventListener('resize', resizeCanvas, false);
-    window.addEventListener('orientationchange', resizeCanvas, false);
-    resizeCanvas();
-    canvas.onclick = function(event){
-        handleClick(event.clientX, event.clientY);
-    };
-    setInterval(handleClick,5);
-    
-
-
-}
-function handleClick(x,y,w){
-    var found = false;
-    for(var i = 0; i<drops.length; i++){
-        d = Math.sqrt((drops[i].x-x)*(drops[i].x-x) + (drops[i].y-y)*(drops[i].y-y));
-        if(d<=5){
-            drops.splice(i,1);
-            found = true;
-        }
+	  var canvas;
+	  var context;
+	  var shapes = []
+	  var timer;
+	  var timerTwo;
+	  var possibleShapes = ['drop','bolt','square','circle','cloud','text'];
+function Shape(x, y, color) {
+		this.x = x;
+		this.y = y;
+		this.size = Math.random()*20+5;
+		this.dx = Math.random()*4-2;
+		this.dy = Math.random()*4-2;
+		this.color = color;
+		this.shape = possibleShapes[Math.floor(Math.random()*possibleShapes.length)];
+	  }
+function init() {
+        canvas = document.getElementById('canvas');
+        context = canvas.getContext("2d");
+ 
+        window.addEventListener('resize', resizeCanvas, false);
+        window.addEventListener('orientationchange', resizeCanvas, false);
+        resizeCanvas();
+		canvas.onclick = function(event) {
+			handleClick(event.clientX, event.clientY);
+		};
+		timer = setInterval(resizeCanvas, 20);
+		timerTwo = setInterval(newShape, 400);
+      }
+function newShape() {
+		var x = Math.random() * canvas.width;
+		var y = Math.random() * canvas.height;
+		var colors = ["#000080", "#add8e6", "blue","white"];
+		var color = colors[Math.floor(Math.random()*colors.length)];
+		shapes.push(new Shape(x, y, color));
+		
+	  }
+	  
+function drawText() {
+		context.beginPath();
+		context.font= "35px Arial";
+  		context.fillStyle = "white";
+  		context.fillText("Drip, Drip, Drop, little April Shower...", 500, 50);
+  		context.closePath();
 	}
+	
+function drawCircle(circle) {
+		 context.beginPath();
+		 context.arc(circle.x, circle.y, circle.size, 0, degreesToRadians(360), true);
+		 context.fillStyle = circle.color;
+		 context.fill();
+	  }
 
-    fillBackgroundColor();
-    if(!found){
-    var colors = ["#000080", "#add8e6", "blue"];
-        var color = colors[Math.floor(Math.random()*colors.length)];
-        drops.push(new Drop(x,y,color));
-        clouds.push(new Cloud(x,y,color));
-        squares.push(new Square(x,y,w,color));
-        texts.push(new Text(x,y,w,color));
-    }
-    
-  		for(var i = 0; i<texts.length; i++){
-        drawText(texts[i]);
-    }
-   	 		for(var i = 0; i<drops.length; i++){
-        drawDrop(drops[i]);
-}
-    			for(var i = 0; i<squares.length; i++){
-        drawSquare(squares[i]);
-}
-  					for(var i = 0; i<clouds.length; i++){
-        drawCloud(clouds[i]);
-    }
-}
-function drawText(){
-	context.beginPath();
-	context.font= "35px Arial";
-  	context.fillStyle = "white";
-  	context.fillText("Drip, Drip, Drop, little April Shower...", 500, 50);
-  	context.closePath();
-  
-  }
-  
-function drawDrop(drop){
-    context.beginPath();
-    context.arc(drop.x, drop.y, 5, 0, Math.PI);
-    context.fillStyle = drop.color;
-    context.moveTo(drop.x - 5, drop.y);
-    context.lineTo(drop.x, drop.y - 7);
-    context.lineTo(drop.x + 5, drop.y);
-    context.closePath();
-    context.fill();
-    if (drop.y + drop.dy > canvas.height || drop.y + drop.dy < 0)
-        drop.dy != -drop.dy;
-    drop.y += drop.dy;
-};
+ 
+function drawBolt(bolt) {
+		context.beginPath();
+		context.moveTo(189,66);
+		context.lineTo(220,64);
+		context.moveTo(220,64);
+		context.lineTo(188,104);
+		context.moveTo(188,104);
+		context.lineTo(211,100);
+		context.moveTo(211,100);
+		context.lineTo(176,141);
+		context.moveTo(176,141);
+		context.lineTo(186,141);
+		context.moveTo(186,141);
+		context.lineTo(141,182);
+		context.moveTo(141,182);
+		context.lineTo(161,148);
+		context.moveTo(161,148);
+		context.lineTo(146,150);
+		context.moveTo(146,150);
+		context.lineTo(178,114);
+		context.moveTo(178,114);
+		context.lineTo(155,112);
+		context.moveTo(155,112);
+		context.lineTo(189,66);
+     	context.closePath();
+     	context.fillStyle = 'yellow';
+      	context.fill();
+	  }
 
-
-function drawSquare(square){
-	var sw = Math.floor(4);
-	var sx = Math.floor(Math.random() * canvas.width);
-	var sy = Math.floor(Math.random() * canvas.height);
-	context.beginPath();
-	context.rect(sx, sy, sw, sw); 
-	context.fillStyle = '#add8e6';
-	context.fill();
-
-};
-
-function drawCloud(cloud){
-      context.beginPath();
+function drawCloud(cloud) {
+	  context.beginPath();
       context.moveTo(170, 80);
       context.bezierCurveTo(130, 100, 130, 150, 230, 150);
       context.bezierCurveTo(250, 180, 320, 180, 340, 150);
@@ -131,52 +95,71 @@ function drawCloud(cloud){
       context.bezierCurveTo(320, 5, 250, 20, 250, 50);
       context.bezierCurveTo(200, 5, 150, 20, 170, 80);
       context.closePath();
-      context.lineWidth = 5;
       context.fillStyle = 'white';
       context.fill();
+
+	  }
+
+function drawDrop(drop) {
+		context.beginPath();
+    	context.arc(drop.x, drop.y, 5, 0, Math.PI);
+		context.fillStyle = drop.color;
+   		context.moveTo(drop.x - 5, drop.y);
+    	context.lineTo(drop.x, drop.y - 7);
+   	 	context.lineTo(drop.x + 5, drop.y);
+   	 	context.closePath();
+    	context.fill();
+	  }
+	  
+	
+function drawSquare(square) {
+		var sw = Math.floor(4);
+		var sx = Math.floor(Math.random() * canvas.width);
+		var sy = Math.floor(Math.random() * canvas.height);
+		context.beginPath();
+		context.rect(sx, sy, sw, sw); 
+		context.fillStyle = '#add8e6';
+		context.fill();
+      }	
       
-
-      context.beginPath();
-      context.moveTo(170, 80);
-      context.bezierCurveTo(130, 100, 130, 150, 230, 150);
-      context.bezierCurveTo(250, 180, 320, 180, 340, 150);
-      context.bezierCurveTo(420, 150, 420, 120, 390, 100);
-      context.bezierCurveTo(430, 40, 370, 30, 340, 50);
-      context.bezierCurveTo(320, 5, 250, 20, 250, 50);
-      context.bezierCurveTo(200, 5, 150, 20, 170, 80);
-      context.closePath();
-      context.lineWidth = 5;
-      context.fillStyle = 'white';
-      context.fill();
-
-};
-
-
-function fillBackgroundColor(){
-    context.fillStyle = 'gray';
-    context.fillRect(0,0,canvas.width,canvas.height);
-}
-function resizeCanvas(){
-    canvas.width = window.innerWidth - 20;
-    canvas.height = window.innerHeight - 20;
-    fillBackgroundColor();
-    for(var i = 0; i<drops.length; i++){
-        drawDrop(drops[i]);
-    }
-        for(var i = 0; i<clouds.length; i++){
-        drawCloud(clouds[i]);
-    }
-            for(var i = 0; i<squares.length; i++){
-        drawSquare(squares[i]);
-    }
-            for(var i = 0; i<texts.length; i++){
-        drawText(texts);
-    }
-}
-window.onload = init;
+function resizeCanvas() {
+        canvas.width = window.innerWidth-20;
+        canvas.height = window.innerHeight-20;
+		fillBackgroundColor();
+		for (var i=0; i<shapes.length; i++) {
+			if (shapes[i].shape == 'text') {
+				drawText(shapes[i]);
+			} else if (shapes[i].shape == 'circle') {
+				drawCircle(shapes[i]);
+			} else if (shapes[i].shape == 'bolt') {
+				drawBolt(shapes[i]);
+			} else if (shapes[i].shape == 'drop') {
+				drawDrop(shapes[i]);
+			} else if (shapes[i].shape == 'cloud') {
+				drawCloud(shapes[i]);
+			}
+			else if (shapes[i].shape == 'square') {
+				drawSquare(shapes[i]);
+			}
+			if (shapes[i].x + shapes[i].dx > canvas.width || shapes[i].x + shapes[i].dx < 0)
+				shapes[i].dx = -shapes[i].dx;
+			if (shapes[i].y + shapes[i].dy > canvas.height || shapes[i].y + shapes[i].dy < 0)
+				shapes[i].dy = -shapes[i].dy;
+				shapes[i].x += shapes[i].dx;
+				shapes[i].y += shapes[i].dy;
+		}
+		 
+      }
+function fillBackgroundColor() {
+		 context.fillStyle = 'black';
+		 context.fillRect(0, 0, canvas.width, canvas.height);
+	}
+function degreesToRadians(degrees) {
+		return (degrees * Math.PI)/180;
+	}
+	window.onload = init;
 </script>
 </head>
 <body>
 <canvas id='canvas' width=500 height=500></canvas>
-</body>
-</html>
+</body>	  
